@@ -1,0 +1,380 @@
+/* Design tokens
+   -----------------------------------------------------------------
+   bg-deep      #0A0E14  base canvas / graphite-navy, not pure black
+   panel        #12181F  UI surfaces
+   panel-line   #1E2A33  hairlines / dividers
+   signal       #4FD1C5  teal — wayfinding, roads on minimap, markers
+   warn         #E8A33D  amber — highways, primary actions
+   text-primary #E7EEF2
+   text-muted   #7C8B96
+   Type: Space Grotesk for UI labels, IBM Plex Mono for numeric HUD readouts
+*/
+
+:root {
+  --bg-deep: #0a0e14;
+  --panel: #12181fcc;
+  --panel-solid: #12181f;
+  --panel-line: #24313a;
+  --signal: #4fd1c5;
+  --warn: #e8a33d;
+  --text-primary: #e7eef2;
+  --text-muted: #7c8b96;
+  --radius: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+#scene-container {
+  position: fixed;
+  inset: 0;
+}
+
+#scene-container canvas {
+  display: block;
+}
+
+/* ---------- Loading ---------- */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--bg-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: opacity 0.4s ease;
+}
+#loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.loading-mark {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--signal);
+  font-weight: 600;
+}
+.loading-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* ---------- Top bar ---------- */
+#panel-topbar {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#search-form {
+  display: flex;
+  flex: 1 1 320px;
+  max-width: 460px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+#search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+#search-input::placeholder {
+  color: var(--text-muted);
+}
+
+#search-form button {
+  background: var(--signal);
+  color: #05201d;
+  border: none;
+  padding: 0 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.toolbar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.toolbar button {
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  color: var(--text-primary);
+  border-radius: var(--radius);
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  font-size: 14px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.toolbar button:hover {
+  border-color: var(--signal);
+}
+
+.toolbar button.active {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+#btn-streetview {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#panel-topbar.compact {
+  opacity: 0.55;
+  transform: translateY(-2px);
+  transition: opacity 0.2s ease;
+}
+#panel-topbar.compact:hover {
+  opacity: 1;
+}
+
+/* ---------- Route panel ---------- */
+#route-panel {
+  position: fixed;
+  top: 68px;
+  left: 14px;
+  z-index: 19;
+  background: var(--panel-solid);
+  border: 1px solid var(--panel-line);
+  border-left: 3px solid var(--warn);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  min-width: 240px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#route-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+}
+#route-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+#route-detail {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+#btn-start-drive {
+  margin-top: 10px;
+  width: 100%;
+  background: var(--warn);
+  border: none;
+  color: #201202;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 9px 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* ---------- Status bar ---------- */
+#status-bar {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 18;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: "IBM Plex Mono", monospace;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  max-width: 70vw;
+  text-align: center;
+}
+
+/* ---------- Driving HUD ---------- */
+#hud-drive {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  background: var(--panel-solid);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+}
+#hud-drive.hidden {
+  display: none;
+}
+.hud-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 58px;
+}
+.hud-block span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--signal);
+}
+.hud-block.road span {
+  font-size: 14px;
+  color: var(--warn);
+}
+.hud-block label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.hud-block.speed-control {
+  min-width: 90px;
+}
+.hud-hint {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: "IBM Plex Mono", monospace;
+  white-space: nowrap;
+}
+
+/* ---------- Minimap ---------- */
+#minimap-canvas {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  z-index: 18;
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+}
+
+/* ---------- Touch driving controls (coarse-pointer devices only) ---------- */
+#touch-controls {
+  display: none;
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 25;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 16px 16px;
+  pointer-events: none;
+}
+@media (pointer: coarse) {
+  #touch-controls:not(.hidden) {
+    display: flex;
+  }
+}
+.tc-group {
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+}
+.tc-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid var(--panel-line);
+  background: var(--panel);
+  color: var(--text-primary);
+  font-size: 20px;
+  backdrop-filter: blur(6px);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.tc-btn:active,
+.tc-btn.pressed {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+.tc-btn.tc-accel {
+  background: var(--warn);
+  color: #201202;
+  border-color: var(--warn);
+}
+.tc-btn.tc-accel:active {
+  filter: brightness(1.1);
+}
+.tc-pedals {
+  flex-direction: column-reverse;
+}
+
+@media (max-width: 640px) {
+  #panel-topbar {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  #search-form {
+    max-width: none;
+    flex: 1 1 100%;
+  }
+  .toolbar button {
+    min-width: 34px;
+    height: 34px;
+    font-size: 12px;
+  }
+  #minimap-canvas {
+    width: 140px;
+    height: 100px;
+  }
+  #hud-drive {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .hud-block {
+    min-width: 42px;
+  }
+  .hud-block span {
+    font-size: 17px;
+  }
+}
