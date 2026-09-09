@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Terrain/One — Independent 3D Terrain &amp; Drive Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="scene-container"></div>
+
+<div id="loading-overlay">
+  <div class="loading-mark">TERRAIN/ONE</div>
+  <div class="loading-sub">building procedural terrain…</div>
+</div>
+
+<header id="panel-topbar">
+  <form id="search-form" autocomplete="off">
+    <input
+      id="search-input"
+      type="text"
+      list="city-list"
+      placeholder="Search location… (try &quot;Dallas to Houston&quot;)"
+    />
+    <datalist id="city-list">
+      <option value="Los Angeles"></option>
+      <option value="San Francisco"></option>
+      <option value="Sacramento"></option>
+      <option value="San Diego"></option>
+      <option value="Fresno"></option>
+      <option value="Las Vegas"></option>
+      <option value="Reno"></option>
+      <option value="Phoenix"></option>
+      <option value="Tucson"></option>
+      <option value="Flagstaff"></option>
+      <option value="Salt Lake City"></option>
+      <option value="Denver"></option>
+      <option value="Colorado Springs"></option>
+      <option value="Dallas"></option>
+      <option value="Fort Worth"></option>
+      <option value="Houston"></option>
+      <option value="Austin"></option>
+      <option value="San Antonio"></option>
+      <option value="El Paso"></option>
+    </datalist>
+    <button type="submit">Go</button>
+  </form>
+
+  <div class="toolbar">
+    <button id="btn-zoom-out" title="Zoom out">&minus;</button>
+    <button id="btn-zoom-in" title="Zoom in">&plus;</button>
+    <button id="btn-compass" title="Reset north">N</button>
+    <button id="btn-locate" title="Current location">&#9678;</button>
+    <button id="btn-dimension" title="Toggle 2D / 3D">3D</button>
+    <button id="btn-palette" title="Toggle Map / Terrain colors">Terrain</button>
+    <button id="btn-fullscreen" title="Fullscreen">&#9974;</button>
+    <button id="btn-streetview" title="Enter street view">&#128663; STREET VIEW</button>
+  </div>
+</header>
+
+<div id="route-panel" class="hidden">
+  <div id="route-title">—</div>
+  <div id="route-detail">—</div>
+  <button id="btn-start-drive">START DRIVE</button>
+</div>
+
+<div id="status-bar">
+  <span id="status-line">Drag to orbit · scroll to zoom · search a city to begin</span>
+</div>
+
+<div id="hud-drive" class="hidden">
+  <div class="hud-block">
+    <span id="hud-speed-value">0</span>
+    <label>mph</label>
+  </div>
+  <div class="hud-block">
+    <span id="hud-distance-value">0.0</span>
+    <label>mi driven</label>
+  </div>
+  <div class="hud-block road">
+    <span id="hud-road-value">off-road</span>
+    <label>current road</label>
+  </div>
+  <div class="hud-block speed-control">
+    <label for="speed-range">speed</label>
+    <input id="speed-range" type="range" min="0.4" max="2" step="0.1" value="1" />
+  </div>
+  <div class="hud-hint">WASD / arrows / on-screen pad to drive · drag to look around</div>
+</div>
+
+<canvas id="minimap-canvas" width="220" height="160"></canvas>
+
+<div id="touch-controls" class="hidden">
+  <div class="tc-group tc-steer">
+    <button id="tc-left" class="tc-btn" aria-label="Steer left">&#9664;</button>
+    <button id="tc-right" class="tc-btn" aria-label="Steer right">&#9654;</button>
+  </div>
+  <div class="tc-group tc-pedals">
+    <button id="tc-back" class="tc-btn" aria-label="Reverse">&#9660;</button>
+    <button id="tc-forward" class="tc-btn tc-accel" aria-label="Accelerate">&#9650;</button>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
